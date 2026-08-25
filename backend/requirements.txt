@@ -1,0 +1,15 @@
+mkdir \backend\scripts
+
+New-Item -ItemType File -Force -Path app\__init__.py, script\__init__.py, requirements.txt | Out-Null
+
+.venv/bin/activate
+
+py -m venv .venv
+
+py -m pip install --upgrade pip
+
+fastapi dev app/main.py
+
+psql -U postgres -c "CREATE DATABASE medflow_dev"
+
+psql -U postgres -d medflow_dev
