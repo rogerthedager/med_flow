@@ -2,7 +2,7 @@ mkdir \backend\scripts
 
 New-Item -ItemType File -Force -Path app\__init__.py, script\__init__.py, requirements.txt | Out-Null
 
-.venv/bin/activate
+.\.venv\Scripts\Activate.ps1
 
 py -m venv .venv
 
@@ -13,3 +13,12 @@ fastapi dev app/main.py
 psql -U postgres -c "CREATE DATABASE medflow_dev"
 
 psql -U postgres -d medflow_dev
+
+
+python -m pip install bcrypt pyjwt
+
+
+py -m pip freeze > requirements.txt
+
+
+winget install OpenJS.NodeJS.LTS

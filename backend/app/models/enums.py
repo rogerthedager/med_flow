@@ -17,3 +17,7 @@ class OrderStatus(str, Enum):
     COMPLETED = "Completed"
     FAILED = "Failed"
 
+class UserRole(str,Enum):
+    CLINIAL_ADMIN = "Clinial Admin"
+    FIELD_TECHNICIAN = "Field_Techician"
+    AUDITOR = "Auditor"
