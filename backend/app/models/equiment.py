@@ -20,30 +20,30 @@ class Equipment(Base):
     __tablename__ = "equipments"
 
     __table_args__ = (
-        CheckConstraint("battery_level BETWEEN 0 AND 100",
-                        name="battery_level_range"),
+        CheckConstraint("Charge BETWEEN 0 AND 100",
+                        name="charge_level_range"),
     )
     
     id: Mapped[int] = mapped_column(primary_key = True)
     serial_number: Mapped[str] = mapped_column(String(50), unique=True)
     model: Mapped[str] = mapped_column(String(100))
 
-    status: Mapped[Equipment_status] = mapped_column(
+    status: Mapped[EquipmentStatus] = mapped_column(
         SqlEnum(
-            Equipment_status,
+            EquipmentStatus,
             name="equipment_status",
 
             value_callable= lambda enum_cls:[member.value for member in enum_cls],
         ),
-        default=Equipment_status.AVAILIABLE,
+        default=EquipmentStatus.AVAILIABLE,
     )
 
     charge_level: Mapped[Decimal]= mapped_column(Numeric(5,2))
-    hospital_id: Mappend[int]=mapped_column(Integer, ForeignKey("hospitals.id"))
+    hospital_id: Mapped[int]=mapped_column(Integer, ForeignKey("hospitals.id"))
 
 
     hospital: Mapped["Hospital"] = relationship(back_populates="equipments")
-    work_order: Mapped[list["work_order"]] = relationship(back_populates="equipment")
+    work_order: Mapped[list["Work_Order"]] = relationship(back_populates="equipment")
 
     LOW_CHARGE_THRESHOLD = 20
 
@@ -52,11 +52,11 @@ class Equipment(Base):
         return self.charge_level < limit
 
     def needs_maintenace(self) -> bool:
-        return self.status == Equipment_status.MAINTENANCE
+        return self.status == EquipmentStatus.MAINTENANCE
 
     def offline(self) -> bool:
-        return self.status == Equipment_status.OFFLINE
+        return self.status == EquipmentStatus.OFFLINE
 
     def __repr__(self) -> str:
         return (f"Equipment(serial={self.serial_number!r}, model={self.model!r}, "
-                f"Battery={self.charge_level}%, status={self.status.value})")
+                f"Charge={self.charge_level}%, status={self.status.value})")
