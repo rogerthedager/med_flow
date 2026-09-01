@@ -37,7 +37,7 @@ async def list_equipments(
     return list(result.scalars().all()) 
 
 
-@router.get("/{robot_id}", response_model = EquipmentRead)
+@router.get("/{equipment_id}", response_model = EquipmentRead)
 async def get_equipmemt(equipment_id: int, db : AsyncSession = Depends(get_db), _: User = Depends(get_current_user)) -> Equipment:
     equipment = await db.get(Equipment, equipment_id)
     if equipment is None:

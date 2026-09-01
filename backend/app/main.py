@@ -1,6 +1,9 @@
-from fastapi import FastAPI
-
-from app.routers import equipments
+import os
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import IntegrityError
+from app.routers import equipments,auth
 
 
 app = FastAPI(
@@ -10,6 +13,7 @@ app = FastAPI(
 )
 
 app.include_router(equipments.router)
+app.include_router(auth.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,3 +28,21 @@ app.add_middleware(
 async def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
+@app.get("/version", tags=["health"])
+async def version() -> dict[str, str]:
+    return {"version": app.version}
+
+@app.exception_handler(IntegrityError)
+async def integrity_error_handler(request: Request, exc: IntegrityError) -> JSONResponse:
+    return JSONResponse(
+        status_code=409,
+        content={"detail": "A database constraint was violated (e.g a duplicate value)" },
+    ) 
+    
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "An unexpected error occurred."},
+    )
+    
