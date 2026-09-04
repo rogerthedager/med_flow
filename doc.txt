@@ -1,0 +1,54 @@
+mkdir \backend\scripts
+
+New-Item -ItemType File -Force -Path app\__init__.py, script\__init__.py, requirements.txt | Out-Null
+
+.\.venv\Scripts\Activate.ps1
+
+py -m venv .venv
+
+py -m pip install --upgrade pip
+
+fastapi dev app/main.py
+
+psql -U postgres -c "CREATE DATABASE medflow_dev"
+
+psql -U postgres -d medflow_dev
+
+
+python -m pip install bcrypt pyjwt
+
+
+py -m pip freeze > requirements.txt
+
+
+
+ npm create vite@latest frontend -- --template react
+ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm install axios @mui/x-data-grid
+winget install OpenJS.NodeJS.LTS
+
+
+
+With the virtual environment running:
+```
+$env:DATABASE_URL = "postgresql+asyncpg://<master-username>:<master-password>@<rds-endpoint>:5432/robopulse"
+
+$env:DATABASE_URL
+
+psql -h <rds-endpoint> -U <master-username> -d postgres
+
+postgres=> CREATE DATABASE robopulse;
+postgres=> \q
+
+python -m scripts.day3_create_tables
+
+
+psql -h <rds-endpoint> -U <master-username> -d robopulse -f ..\db\sql\seed.sql
+
+python -m scripts.day5_seed_users
+
+docker run --rm -v ${PWD}:/var/task -w /var/task public.ecr.aws/sam/build-python3.12 `
+>> pip install -r requirements-lambda.txt -t package
+ Copy-Item -Recurse app package\app
+Copy-Item lambda_handler.py package\lambda_handler.py
+Compress-Archive -Path package\* -DestinationPath lambda_deployment.zip -Force 
